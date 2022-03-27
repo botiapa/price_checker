@@ -1,14 +1,13 @@
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 
 const CREDS = require("./key.json");
-const SPREADSHEET_ID = "1dYyHBLW92jrXyRHlAH5kPDDbDpWAWfbfu-m0_1f2csg";
 
 function convertMsToTimestamp(milliseconds) {
     return milliseconds / 1000 / 60 / 60 / 24 + 25569 + 1 / 24;
 }
 
-async function updateSpreadsheet(products, history) {
-    const doc = new GoogleSpreadsheet(SPREADSHEET_ID);
+async function updateSpreadsheetPrices(products, history) {
+    const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
     const start = new Date();
     await doc.useServiceAccountAuth(CREDS);
 
@@ -107,4 +106,4 @@ async function updateSpreadsheet(products, history) {
     }
 }
 
-module.exports = updateSpreadsheet;
+module.exports = updateSpreadsheetPrices;

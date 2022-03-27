@@ -1,11 +1,14 @@
 const axios = require("axios").default;
 const { JSDOM } = require("jsdom");
 const jsdom = require("jsdom");
-const updateSpreadsheet = require("./spreadsheet");
+const updateSpreadsheetPrices = require("./spreadsheet");
+const updateAlerts = require("./alerts");
 
 const start_url =
     "https://www.arukereso.hu/videokartya-c3142/f:rtx-3070,rtx-3080,rtx-3090,rtx-3060,rtx-3060-ti,rx-6800,rx-6800-xt,rx-6900-xt,rx-6700-xt,rtx-3080-ti,rtx-3070-ti,rx-6600-xt,rx-6600,rx-6500-xt,rtx-3050/?start=0";
 const GET_HISTORY = false;
+
+require("dotenv").config();
 
 async function main() {
     let start = new Date();
@@ -15,7 +18,14 @@ async function main() {
     console.log(
         `Parsed ${products.length} products in ${delta / 1000} seconds`
     );
-    updateSpreadsheet(products, GET_HISTORY);
+    try {
+        await updateAlerts(products);
+    } catch (e) {
+        console.log("Failed sending alerts ", e);
+    }
+
+    if (process.env.UPDATE_PRICES === "true")
+        updateSpreadsheetPrices(products, GET_HISTORY);
 }
 
 async function parsePages(data) {
