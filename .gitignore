@@ -8,3 +8,5 @@
 
 key.json
 node_modules/**
+.env
+alerts_config.json
